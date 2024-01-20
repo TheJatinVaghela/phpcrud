@@ -1,3 +1,5 @@
+
+
 <h1>HOME</h1>
 <nav class="navbar navbar-light bg-light">
     <a href="create" class="btn btn-outline-success me-2" type="button">create</a>
@@ -15,6 +17,10 @@
             <tr>
             <th scope="col">id</th>
             <th scope="col">Name</th>
+            <th scope="col">Email</th>
+            <th scope="col">Password</th>
+            <th scope="col">Gender</th>
+            <th scope="col">Hobby</th>
             <th scope="col">IMG</th>
             <th scope="col">Delete</th>
         </tr>
@@ -25,7 +31,11 @@
                     <tr>
                     <th scope="row"><?php echo $value["id"] ?></th>
                     <td><?php echo $value["userName"] ?></td>
-                    <td><img src="<?php echo $this->assets."/img/".$value["img"]; ?>" alt="⭐" width="30px" height="30px"/></td>
+                    <td><?php echo $value["userEmail"] ?></td>
+                    <td><?php echo $value["userPassword"] ?></td>
+                    <td><?php echo $value["userGender"] ?></td>
+                    <td><?php echo $value["userHobby"] ?></td>
+                    <td><img src="<?php echo $this->assets."/img/".$value["userImage"]; ?>" alt="⭐" width="30px" height="30px"/></td>
                     <th scope="col"><a class="btn btn-outline-danger delete_J" name="<?php echo $value["id"]?>" type="button">delete</a></th>
                     </tr>
                 <?php }?>

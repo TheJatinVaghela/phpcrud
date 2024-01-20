@@ -18,8 +18,8 @@ function convert(
 		$ext = pathinfo($fullPath, PATHINFO_EXTENSION);
 		$this->extension = $ext;
 		$this->newFilefullPath = str_replace('.'.$ext,'.webp',$fullPath);
-
-		
+echo $fullPath;
+		exit();
 		$isValidFormat = false;
 
 		// Create and save

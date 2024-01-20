@@ -52,17 +52,29 @@ class model
     } 
 
     protected function upload_user($data){
-        $sql= 'INSERT INTO `user`(`userName`,`img`) VALUE('.'"'.$data['userName'].'"'.','.'"'.$data['userImage'].'"'.')' ;
+        $sql= 'INSERT INTO `user` (';
+        foreach ($data as $key => $value) {
+            $sql .= "`$key`,";
+        };
+        $sql = substr($sql,0,-1);
+        $sql .= " ) VALUES (";
+        foreach ($data as $key => $value) {
+            $sql .= "'$value',";
+        };
+        $sql = substr($sql,0,-1);
+        $sql .= " )";
+        
+        //(`userName`,`img`) VALUE('.'"'.$data['userName'].'"'.','.'"'.$data['userImage'].'"'.')' ;
         $answer = $this->sqli_($sql,true);
         return $answer;
 
     }
     protected function update_user($data,$id){
-        if(isset($data["img"])){
+        if(isset($data["userImage"])){
             $arr = $this->getUserdata('*',$id);
             if($arr != NULL){
-                if(is_file("./assets/img/".$arr[0]['img'])){
-                    unlink("./assets/img/".$arr[0]['img']); //delete file
+                if(is_file("./assets/img/".$arr[0]['userImage'])){
+                    unlink("./assets/img/".$arr[0]['userImage']); //delete file
                 };
             };
         };
@@ -84,7 +96,7 @@ class model
         };
         if($id != NULL){
             $userdata = $this->getUserdata('*',$id);
-            unlink("./assets/img/".$userdata[0]["img"]);
+            unlink("./assets/img/".$userdata[0]["userImage"]);
             $sql = 'DELETE FROM `user` WHERE `id` = '."'".$id."'";
             $answer = $this->sqli_($sql,true);
         };

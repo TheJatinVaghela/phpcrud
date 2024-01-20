@@ -31,6 +31,19 @@
         </div>
         <div class="form-row">
             <div class="col-md-4 mb-3">
+                <label for="exampleInputEmail1" class="form-label">Email address</label>
+                <input id="userEmail" type="email" name="userEmail" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+                <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="col-md-4 mb-3">
+                <label for="exampleInputPassword1" class="form-label">Password</label>
+                <input id="userPassword" type="password" name="userPassword" class="form-control" id="exampleInputPassword1">
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="col-md-4 mb-3">
                 <label for="validationCustom02">IMG</label>
                 <img id="img" src="" alt="" width="50px" height="50px"/>
                 <button type="button" id="removeIMG" class="btn btn-outline-danger">❌</button>
@@ -41,7 +54,31 @@
                 </div>
             </div>
         </div>
-
+        <div class="d-flex justify-content-start mt-3" id="userGender">
+            <div class="form-check me-3">
+                <input id="male" class="form-check-input" value="male" name="userGender" value="male" type="radio"  id="flexRadioDefault4">
+                <label class="form-check-label" for="flexRadioDefault4">
+                    male
+                </label>
+            </div>
+            <div class="form-check me-3">
+                <input id="female" class="form-check-input" value="female" name="userGender" value="female" type="radio" id="flexRadioDefault5">
+                <label class="form-check-label" for="flexRadioDefault5">
+                    female
+                </label>
+            </div>
+            <div class="form-check me-3">
+                <input id="other" class="form-check-input" value="other" name="userGender" value="other" type="radio" id="flexRadioDefault6" checked>
+                <label class="form-check-label" for="flexRadioDefault6">
+                    other
+                </label>
+            </div>
+        </div>
+        <select class="form-select mt-3" id="userHobby" aria-label="Default select example" name="userHobby">
+            <option id="cricket" value="cricket">Cricket </option>
+            <option id="footboll" value="footboll">footboll</option>
+            <option id="chess" value="chess">chess</option>
+        </select>
         <button class="btn btn-primary" id="updateUser" type="submit">Update user</button>
     </form>
     <script>
@@ -86,8 +123,25 @@
         userData.then(result=>{
             userData = result[0];
             console.log(userData);
+            let gender_arr = ['male','female','other'];
+            let hobby_arr = ['cricket','footboll','chess'];
             $('#userName').val(userData.userName);
-            $('#img').attr('src','/clones/phpcrud/assets/img/'+userData.img);
+            $('#userEmail').val(userData.userEmail);
+            $('#userPassword').val(userData.userPassword);
+            gender_arr.forEach(e => {
+                if(e == userData.userGender){
+                    $('#'+e).attr("checked",true);
+                    console.log('gender_arr#'+e);
+                };
+            });
+            hobby_arr.forEach(e => {
+                if(e == userData.userHobby){
+                    $(`#${e}`).attr("selected",true);
+                    console.log('hobby_arr#'+e);
+                };
+            });
+            $('#img').attr('src','/clones/phpcrud/assets/img/'+userData.userImage);
+
             $('#removeIMG').click(function(){
                 $('#img').remove();
                 $('#imgInput').fadeIn(500);
@@ -107,9 +161,26 @@
         newIMG = document.getElementById('imgInput').files[0];
         console.log(newIMG);
         console.log($('#img').attr('src'));
+        let gender_arr = ['male','female','other'];
+        let hobby_arr = ['cricket','footboll','chess'];
+        let gender_chacked;
+        let hobby_chacked;
+        gender_arr.forEach(e => {
+            if($(`#${e}`).prop('checked') == true){
+                console.log("gender"+e);
+                gender_chacked = e;
+            }
+        });
+        hobby_arr.forEach(e => {
+            if($(`#${e}`).prop('selected') == true){
+                console.log("hobby"+e);
+                hobby_chacked = e;
+            }
+        });
         if(newIMG != null || newIMG != undefined){
             form_data.append('userImage', newIMG);
             old_userData =userData;
+            
             userData = imgUpload('http://localhost/clones/phpcrud/imgupload',form_data)
             .then(result=>{
                 console.log(result.file);
@@ -117,8 +188,13 @@
                 JSON.stringify({
                     "id" : old_userData["id"],
                     "userName":$('#userName').val(),
-                    "img":result.file
+                    "userEmail": $('#userEmail').val(),
+                    "userPassword":$('#userPassword').val(),
+                    "userHobby":$(`#${hobby_chacked}`).val(),
+                    "userGender":$(`#${gender_chacked}`).val(),
+                    "userImage":result.file
                 }));
+                
                 return did_img_upleaded;
             })
             .then(result=>{
@@ -134,7 +210,11 @@
             userData = getuserdata('http://localhost/clones/phpcrud/update_user',
             JSON.stringify({
                 "id" : old_userData["id"],
-                "userName":$('#userName').val()
+                "userName":$('#userName').val(),
+                "userEmail": $('#userEmail').val(),
+                "userPassword":$('#userPassword').val(),
+                "userHobby":$(`#${hobby_chacked}`).val(),
+                "userGender":$(`#${gender_chacked}`).val()
             })).then(result=>{
                 console.log('did_img_upleaded');
                 if(result.data){

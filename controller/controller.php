@@ -34,19 +34,18 @@ class controller extends model
             }
             case '/create_user':{
                 if($_SERVER["REQUEST_METHOD"] == "POST"){
-
+                   
                     $this->p(["REQ"=>$_REQUEST,"File"=>$_FILES]);
                    
                     $imgName = $this->upload_files($_FILES);
-                    //Converting Img TO Webp
                     $fullPath = "$this->to";
-                    $outPutQuality = 70;
-                    //Instantiate the class
-                    $webp = new ToWebp();
-                    //takes in fullpath, outputQuality, deleteOriginal (true/false)
-                    $result = $webp->convert($fullPath,$outPutQuality,true);
-                     $this->p($result);
-                    $data = ["userName"=>$_REQUEST["userName"],"userImage"=>$result->file];
+
+                    $data = ["userName"=>$_REQUEST["userName"],
+                            "userEmail"=>$_REQUEST["userEmail"],
+                            "userPassword"=>$_REQUEST["userPassword"],
+                            "userGender"=>$_REQUEST["userGender"],
+                            "userHobby"=>$_REQUEST["userHobby"],
+                            "userImage"=>$imgName];
                     $answer = $this->upload_user($data);
                     if(isset($answer)){
                         header("Location: http://localhost/clones/phpcrud/home");
@@ -58,13 +57,26 @@ class controller extends model
                 if($_SERVER["REQUEST_METHOD"]== "POST"){
              
                     $data = json_decode(file_get_contents("php://input"),true);
-                    if(isset($data["img"])){
-                        $this->update_user_call = ["userName"=>$data["userName"],"img"=>$data["img"]];
-                        
+                    if(isset($data["userImage"])){
+                        $this->update_user_call = array();
+                        foreach ($data as $key => $value) {
+                            if($key == 'userImage'){
+                                continue;
+                            }else{
+                                $this->update_user_call[$key]=$value;
+                            };
+                        };
+                        $this->update_user_call['userImage']=$data["userImage"];
                     }else{
 
-                        $this->update_user_call = ["userName"=>$data["userName"]];
-                       
+                        $this->update_user_call = array();
+                        foreach ($data as $key => $value) {
+                            if($key == 'userImage'){
+                                
+                            }else{
+                                $this->update_user_call[$key]=$value;
+                            };
+                        };
                     };
                     $answer = $this->update_user($this->update_user_call,$data["id"]);
 
@@ -80,14 +92,7 @@ class controller extends model
 	                    //   echo json_encode($this->update_img);
                         //  $this->p($_FILES);
                         $imgName = $this->upload_files($_FILES);
-                        //Converting Img TO Webp
-                        $fullPath = "$this->to";
-                        $outPutQuality = 70;
-                        //Instantiate the class
-                        $webp = new ToWebp();
-                        //takes in fullpath, outputQuality, deleteOriginal (true/false)
-                        $result = $webp->convert($fullPath,$outPutQuality,true);
-                        $this->update_img = ["file"=>$result->file];
+                        $this->update_img = ["file"=>$imgName];
 	                    echo json_encode($this->update_img);
                     };
                 };
